@@ -3,7 +3,7 @@
 
 #include "vector.h"
 
-class Ray {
+struct Ray {
     public :
         Vector o ; // origin vector
         Vector u ; // unit vector
