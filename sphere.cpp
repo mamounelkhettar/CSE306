@@ -9,7 +9,7 @@ Intersection intersect(const Ray &ray) {
     double t ;
 
     // find solution of quadratic equation t*t + bt + c
-    Vector v = ray.o - c ;
+    Vector v = (ray.o - c) ;
     double b = dot(v, ray.u) ; // dot product "b" of our equation
     double c = norm(v)*norm(v) ;
     double d = b*b - (c - r*r) ; //discriminant d = b*b - 4*a*c

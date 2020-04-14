@@ -8,7 +8,7 @@ class Ray {
         Vector o ; // origin vector
         Vector u ; // unit direction
         
-        Ray(Vector o, Vector u) {
+        Ray(const Vector &o, const Vector &u) {
             this->o = o ; 
             this->u = u ;
         }
