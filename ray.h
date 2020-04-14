@@ -8,10 +8,9 @@ class Ray {
         Vector o ; // origin vector
         Vector u ; // unit direction
         
-        Ray &operator=(const Ray &ray) {
-            o = ray.o ; 
-            u = ray.u ;
-            return *this ;
+        Ray(Vector o, Vector u) {
+            this->o = o ; 
+            this->u = u ;
         }
 
     };
