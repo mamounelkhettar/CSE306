@@ -4,12 +4,13 @@
 Sphere::Sphere(const Vector &c, double r, Vector &albed):
 	c(c), r(r), albed(albed) {}
 
-Intersection intersect(const Ray &ray) {
+Intersection intersect(const Ray ray) {
     Intersection i ;
     double t ;
 
     // find solution of quadratic equation t*t + bt + c
-    Vector v = (ray.o - c) ;
+    Vector o = ray.o ;
+    Vector v = (o - c) ;
     double b = dot(v, ray.u) ; // dot product "b" of our equation
     double c = norm(v)*norm(v) ;
     double d = b*b - (c - r*r) ; //discriminant d = b*b - 4*a*c
@@ -20,7 +21,7 @@ Intersection intersect(const Ray &ray) {
 
         if (t2 < 0){
             i.exist = false ;
-            return i;
+            return i ;
         }
 
         if (t1 >= 0){
