@@ -10,14 +10,14 @@ struct Intersection {
         Vector point ; // intersection point
         Vector normal ;
 
-        /*
+        
         Intersection &operator=(const Intersection &intersection) {
             this->exist = intersection.exist;
             this->point = intersection.point ;
             this->normal = intersection.normal ;
             return *this ;
         }
-        */
+        
 };
 
 
