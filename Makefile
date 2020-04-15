@@ -1,6 +1,6 @@
 CC=g++
-CFLAGS= -Wall -std=c++11 -O3
-LDFLAGS=
+CFLAGS= -Wall -std=c++11 -O3 
+LDFLAGS= 
 EXEC=mek
 SRC= $(wildcard *.cpp)
 HEAD= $(wildcard *.h)

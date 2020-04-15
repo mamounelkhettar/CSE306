@@ -1,27 +1,25 @@
 
 #include "sphere.h"
 
-Sphere::Sphere(const Vector &c, double r, Vector &albed):
-	c(c), r(r), albed(albed) {}
+Sphere::Sphere(const Vector &center, double radius, Vector &albed):
+	center(center), radius(radius), albed(albed) {}
 
-Intersection intersect(const Ray ray) {
-    Intersection i ;
+Intersection Sphere::intersect(const Ray &ray, Intersection &inter) const {
     double t ;
 
     // find solution of quadratic equation t*t + bt + c
-    Vector o = ray.o ;
-    Vector v = (o - c) ;
+    Vector v = (ray.o - center) ;
     double b = dot(v, ray.u) ; // dot product "b" of our equation
     double c = norm(v)*norm(v) ;
-    double d = b*b - (c - r*r) ; //discriminant d = b*b - 4*a*c
+    double d = b*b - (c - radius*radius) ; //discriminant d = b*b - 4*a*c
 
     if (d >= 0) {
         double t1 = (b - sqrt(d)) ;
         double t2 = (b + sqrt(d)) ;
 
         if (t2 < 0){
-            i.exist = false ;
-            return i ;
+            inter.exist = false ;
+            return inter ;
         }
 
         if (t1 >= 0){
@@ -30,19 +28,18 @@ Intersection intersect(const Ray ray) {
             t = t2 ;
         }
 
-        Vector point ; // intersection point
-        point = ray.o + t*ray.u ;
+        Vector point = ray.o + ray.u * t ; // intersection point
         Vector pc = point - c ;
         Vector normal = (point - c) / (norm(pc)) ; // unit normal at P
 
-        i.exist = true ;
-        i.point = point ;
-        i.normal = normal ;
+        inter.exist = true ;
+        inter.point = point ;
+        inter.normal = normal ;
 
-        return i;
+        return inter;
     }
     else {
-        i.exist = false ;
-        return i;
+        inter.exist = false ;
+        return inter;
     }
 }

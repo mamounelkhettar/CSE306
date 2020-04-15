@@ -1,11 +1,10 @@
-#ifndef scene
-#define scene
+#ifndef scene_h
+#define scene_h
 
 #include <iostream>
 using namespace std;
 #include <vector>
 
-#include "vector.h"
 #include "sphere.h"
 
 class Scene {

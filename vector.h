@@ -12,6 +12,7 @@ class Vector {
             coord[1] = y ;
             coord[2] = z ;
         }
+
         Vector& operator+=(const Vector& b) {
             coord[0] += b[0] ;
             coord[1] += b[1] ;
@@ -21,19 +22,37 @@ class Vector {
         const double& operator[](int i) const {return coord[i] ; } 
         double& operator[](int i) { return coord[i] ; } 
 
+        Vector ( double t = 0 ) { // if we want to multiply Vector with double
+            coord[0] = t ;
+            coord[1] = t ;
+            coord[2] = t ;
+        }  
+
     private :
         double coord[3] ;
 };
 
-Vector operator+(const Vector& a, const Vector &b) {
+inline Vector operator+(const Vector& a, const Vector &b) {
     return Vector(a[0]+b[0], a[1]+b[1], a[2]+b[2]) ;
 }
 
-double dot(const Vector& a, const Vector &b) {
+inline Vector operator-(const Vector& a, const Vector &b) {
+    return Vector(a[0]-b[0], a[1]-b[1], a[2]-b[2]) ;
+}
+
+inline Vector operator*(const Vector& a, const Vector &b) {
+    return Vector(a[0]*b[0], a[1]*b[1], a[2]*b[2]) ;
+}
+
+inline Vector operator/(const Vector& a, const Vector &b) {
+    return Vector(a[0]/b[0], a[1]/b[1], a[2]/b[2]) ;
+}
+
+inline double dot(const Vector& a, const Vector &b) {
     return a[0]*b[0] + a[1]*b[1] + a[2]*b[2] ;
 }
 
-double norm(const Vector& a) {
+inline double norm(const Vector& a) {
     return sqrt(a[0]*a[0] + a[1]*a[1] + a[2]*a[2]) ;
 }
 

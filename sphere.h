@@ -1,20 +1,20 @@
-#ifndef sphere
-#define sphere
+#ifndef sphere_h
+#define sphere_h
 
 #include <iostream>
 
-#include "vector.h"
 #include "ray.h"
+#include "intersection.h"
 
 class Sphere {
     public:
-        Vector c; // center of sphere
-        double r; // radius of sphere
-        Vector albed; // color
-        Sphere(const Vector &c, double r, Vector &albed);
+        Vector center ; // center of sphere
+        double radius ; // radius of sphere
+        Vector albed ; // color
+        Sphere(const Vector &center, double radius, Vector &albed) ;
+        Intersection intersect(const Ray &ray, Intersection &inter) const ;
 };
 
-Intersection intersect(const Ray &ray) ;
 
 
 
