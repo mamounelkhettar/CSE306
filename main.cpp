@@ -85,9 +85,9 @@ int main(int argc, char *argv[]) {
         }
 
     }
-    
+
     // generate the image
-    stbi_write_png("image.png", W, H, 3, &img[0], 0) ;
+    stbi_write_png("image_black_white.png", W, H, 3, &img[0], 0) ;
     
     return 0;
 }
