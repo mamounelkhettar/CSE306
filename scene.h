@@ -10,11 +10,15 @@ using namespace std;
 class Scene {
     public :
         std::vector<Sphere> s ;
-
-        // Scene(std::vector<Sphere> &s) ;
+    
+    
+        Scene(std::vector<Sphere> &s) {
+            this->s = s ;
+        }
 
         Sphere intersect(const Ray& ray) ;
-        Vector getColor(const Ray& ray , int ray_depth ) ;
+        Vector getColor(const Ray& ray , int ray_depth) ;
+        Intersection intersect(const Ray& ray) const ;
 
 };
 

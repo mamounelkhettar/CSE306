@@ -22,7 +22,7 @@ class Vector {
         const double& operator[](int i) const {return coord[i] ; } 
         double& operator[](int i) { return coord[i] ; } 
 
-        Vector ( double t = 0 ) { // if we want to multiply Vector with double
+        Vector ( double t ) { // if we want to multiply or divide Vector with double
             coord[0] = t ;
             coord[1] = t ;
             coord[2] = t ;

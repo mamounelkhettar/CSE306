@@ -11,8 +11,14 @@ class Sphere {
         Vector center ; // center of sphere
         double radius ; // radius of sphere
         Vector albed ; // color
-        Sphere(const Vector &center, double radius, Vector &albed) ;
-        Intersection intersect(const Ray &ray, Intersection &inter) const ;
+
+        Sphere(const Vector &center, double radius, Vector &albed) {
+            this->center = center ;
+            this->radius = radius ;
+            this->albed = albed ;
+        }
+
+        Intersection intersect(const Ray &ray) const ;
 };
 
 
