@@ -32,7 +32,6 @@ Intersection Scene::intersect(const Ray& ray) const {
         inter = closest_sphere.intersect(ray) ;
         inter.exist = true ;
     }
-
     return inter ;
 }
 

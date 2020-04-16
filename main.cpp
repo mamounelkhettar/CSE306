@@ -52,7 +52,7 @@ int main(int argc, char *argv[]) {
 
     //Scene scene = generate_scene() ;  // scene
     Vector Q = Vector(0, 0, 55) ;     // camera
-    Vector light_source(-10, 20, 40) ;// light source
+    //Vector light_source(-10, 20, 40) ;// light source
 
     double H = 400 ;                     // height
     double W = 400 ;                     // width
@@ -87,7 +87,7 @@ int main(int argc, char *argv[]) {
     }
 
     // generate the image
-    stbi_write_png("image_black_white.png", W, H, 3, &img[0], 0) ;
+    stbi_write_png("image_color.png", W, H, 3, &img[0], 0) ;
     
     return 0;
 }
