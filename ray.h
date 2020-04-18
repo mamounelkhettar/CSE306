@@ -18,6 +18,10 @@ class Ray {
             this->o = o ;
             this->u = u ;
         }
+
+        void print() const {
+            std::cout << "Ray: origin(" << o[0] << ", " << o[1] << ", " << o[2] << ") ; direction(" << u[0] << ", " << u[1] << ", " << u[2] << ")" << std::endl;
+        }
     };
 
 

@@ -1,5 +1,5 @@
 CC=g++
-CFLAGS= -Wall -std=c++11 -O3 
+CFLAGS= -Wall -std=c++17 -O3 
 LDFLAGS= 
 EXEC=mek
 SRC= $(wildcard *.cpp)
@@ -12,7 +12,7 @@ mek: $(OBJ)
 	$(CC) -o $@ $^ $(LDFLAGS)
 
 %.o: %.cpp $(HEAD)
-	$(CC) -o $@ -c $<
+	$(CC) -o $@ -c $< $(CFLAGS)
 
 .PHONY: clean mrproper
 

@@ -28,6 +28,10 @@ class Vector {
             coord[2] = t ;
         }  
 
+        void print() const {
+            std::cout << "Vector: x= " << coord[0] << ", y= " << coord[1] << ", z= " << coord[2] << std::endl;
+        }
+
     private :
         double coord[3] ;
 };

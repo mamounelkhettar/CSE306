@@ -5,6 +5,7 @@
 #include <iostream>
 
 struct Intersection {
+    int index ; // index of closest sphere
     bool exist ; // exist or not
     Vector point ; // intersection point
     Vector normal ; // normal of point
