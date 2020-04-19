@@ -25,15 +25,15 @@ Scene generate_scene() {
 
     Vector yellow(Vector(1, 1, 0)) ;
     Vector v4(Vector(0, -1000, 0)) ;
-    Sphere y(v4, 940., yellow) ;
+    Sphere y(v4, 990., yellow) ;
 
     Vector blue(Vector(0, 0, 1)) ;
     Vector v5(Vector(1000, 0, 0)) ;
-    Sphere b(v5, 990., blue) ;
+    Sphere b(v5, 940., blue) ;
 
-    Vector orange(Vector(0, 1, 1)) ;
+    Vector cyan(Vector(0, 1, 1)) ;
     Vector v6(Vector(-1000, 0, 0)) ;
-    Sphere o(v6, 940., orange) ;
+    Sphere o(v6, 940., cyan) ;
     
     Vector white(1, 1, 1) ;
     Vector v7(0, 0, 0) ;
@@ -61,8 +61,8 @@ int main(int argc, char *argv[]) {
     Vector light_source(-10, 20, 40) ; // light source
     //std::cout << scene.s[0].albed[2] << std::endl ;
 
-    double H = 500 ;                   // height
-    double W = 500 ;                   // width
+    double H = 512 ;                   // height
+    double W = 512 ;                   // width
     double fov = M_PI/3 ;              // field of view
 
     std::vector<unsigned char> img ;   // image vector
@@ -78,9 +78,17 @@ int main(int argc, char *argv[]) {
             //std::cout << normal_p[2] << std::endl ;
             
             Ray ray(Q, normal_p);
-            Vector c = scene.intensity(ray, light_source, 100000) ;
+            double intensity = 120000 ;
+            Intersection i1 = scene.intersect(ray) ;
+
+            Vector c = scene.intensity(i1, light_source, intensity) ;
             
-            double power = 1./2.2 ;
+            /*
+            img.push_back(c[0]*255);
+            img.push_back(c[1]*255);
+            img.push_back(c[2]*255);
+            */
+            double power = 1./2.2 ; // gamma correction
             img.push_back(min(255., max(0., pow(c[0], power)*255)));
             img.push_back(min(255., max(0., pow(c[1], power)*255)));
             img.push_back(min(255., max(0., pow(c[2], power)*255)));
@@ -89,7 +97,7 @@ int main(int argc, char *argv[]) {
 
     }
     // generate the image
-    stbi_write_png("image_color.png", W, H, 3, &img[0], 0) ;
+    stbi_write_png("image_shadow_final.png", W, H, 3, &img[0], 0) ;
     
     return 0;
 }

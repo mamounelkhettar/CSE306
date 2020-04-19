@@ -21,16 +21,16 @@ Intersection Sphere::intersect(const Ray &ray) const {
         if (t2 < 0){
             inter.exist = false ;
             return inter ;
-        }
-
-        if (t1 >= 0){
-            t = t1 ;
         } else {
+            if (t1 >= 0){
+                t = t1 ;
+            } else {
             t = t2 ;
+            }
         }
-
+        
         Vector point = ray.o + ray.u * t ; // intersection point
-        Vector pc = point - c ;
+        Vector pc = point - center ;
         Vector normal = pc / (norm(pc)) ; // unit normal at P
 
         inter.exist = true ;

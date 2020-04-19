@@ -11,6 +11,7 @@ class Sphere {
         Vector center ; // center of sphere
         double radius ; // radius of sphere
         Vector albed ; // color
+        bool mirror ; // mirror for reflection
 
         Sphere(const Vector &center, double radius, Vector &albed) {
             this->center = center ;

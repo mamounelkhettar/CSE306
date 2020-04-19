@@ -15,7 +15,7 @@ class Scene {
             this->s = s ;
         }
         Intersection intersect(const Ray& ray) const ;
-        Vector intensity(const Ray& ray, const Vector& S, double I) const ;
+        Vector intensity( const Intersection& i1, const Vector& S, double I) const ;
         Vector getColor(const Ray& ray , int ray_depth) ;
 };
 
