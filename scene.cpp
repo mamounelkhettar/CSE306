@@ -1,10 +1,64 @@
 #include "scene.h"
 #include "math.h"
 
+double epsilon = 0.001;
 
-Vector Scene::getColor(const Ray &ray, int ray_depth) {
-    if (ray_depth < 0 ) return Vector (0., 0., 0.) ;
-    // if (intersect( r, P, N, sphere_id)) {}
+Vector Scene::getColor(const Ray& ray, const Vector& S, int ray_depth) const {
+
+    if (ray_depth < 0 ) {
+        return Vector (0., 0., 0.) ;
+    }
+
+    Intersection inter = this->intersect(ray) ;
+    Vector P = inter.point + epsilon*inter.normal ; // offset
+    if (inter.exist) {
+
+        //reflection
+        if (s[inter.index].prop == mirror) { 
+            Ray reflected_ray(P, ray.u - (2 * dot(ray.u, inter.normal)) * inter.normal) ;
+            return this->getColor(reflected_ray, S, ray_depth - 1) ;
+        
+        } else if (s[inter.index].prop == transparent){ 
+            // refraction indices of the Snell-Descartes-Law
+            double n1 = 1. ; 
+            double n2 = 1.5 ; 
+            P =  P - 2*epsilon*inter.normal ;    // offset to avoid noise i.e black points
+            
+            // Fresnel Laws
+            double k0 = (n1-n2)*(n1-n2)/((n1+n2)*(n1+n2)) ;
+            double R = k0 + (1-k0)*pow((1-abs(dot(inter.normal, ray.u))), 5) ;
+    
+            double u = ((double) rand() / (RAND_MAX)) ; // random number
+            if ( u < R ) { // reflection ray
+                Ray reflected_ray(P, ray.u - (2 * dot(ray.u, inter.normal)) * inter.normal) ;
+                return this->getColor(reflected_ray, S, ray_depth - 1) ;
+
+            } else { //refraction ray
+                if (dot(ray.u, inter.normal) > 0) {
+                    P = P + 4*epsilon*inter.normal;
+                    inter.normal = Vector(0., 0., 0.) - inter.normal;
+                    double tmp = n1 ;
+                    n1 = n2 ;
+                    n2 = tmp ;
+                }  
+                double r = 1 - (n1/n2)*(n1/n2)*(1 - dot(ray.u, inter.normal)*dot(ray.u, inter.normal)) ;
+                if (r < 0) {
+                    Ray reflected_ray(P, ray.u - (2 * dot(ray.u, inter.normal)) * inter.normal) ;
+                    return this->getColor(reflected_ray, S, ray_depth - 1) ;
+                }
+                Vector wt_T = (n1/n2)*(ray.u - dot(ray.u, inter.normal)*inter.normal) ;   
+                Vector wt_N =  Vector (0., 0., 0.) - (inter.normal * sqrt(r)) ;   
+                Vector wt = wt_T + wt_N ;
+                Ray refracted_ray(P, wt) ;
+                return this->getColor(refracted_ray, S, ray_depth - 1) ;
+            }
+            
+        } else {
+            double intensity = 100000 ;
+            return this->intensity(inter, S, intensity) ;
+        }
+    }
+
 }
 
 Intersection Scene::intersect(const Ray& ray) const {
@@ -26,17 +80,13 @@ Intersection Scene::intersect(const Ray& ray) const {
         inter.exist = false ;
     } else {
         Intersection closest_sphere = s[index].intersect(ray) ; 
-        inter.exist = true ;
-        inter.point = closest_sphere.point ;
-        inter.normal = closest_sphere.normal ;
-        inter.t = closest_sphere.t ;
+        inter = closest_sphere ;
+    
         inter.index = index ;
         //s[index].albed.print() ;
     }
     return inter ;
 }
-
-double epsilon = 0.01;
 
 Vector Scene::intensity(const Intersection& i1, const Vector& S, double I) const {
     Vector albedo = s[i1.index].albed ;
