@@ -8,6 +8,7 @@ Vector Scene::getColor(const Ray& ray, const Vector& S, int ray_depth) const {
     if (ray_depth < 0 ) {
         return Vector (0., 0., 0.) ;
     }
+    
 
     Intersection inter = this->intersect(ray) ;
     Vector P = inter.point + epsilon*inter.normal ; // offset
