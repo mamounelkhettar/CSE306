@@ -1,5 +1,5 @@
 CC=g++
-CFLAGS= -Wall -std=c++17 -O3 
+CFLAGS= -std=c++17 
 LDFLAGS= 
 EXEC=mek
 SRC= $(wildcard *.cpp)

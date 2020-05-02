@@ -14,12 +14,16 @@ class Sphere {
         double radius ; // radius of sphere
         Vector albed ; // color
         Property prop ; //property
+        double ref_index ; // refraction index
+        bool hollow ; //property
 
-        Sphere(const Vector &center, double radius, const Vector &albed, Property property) {
+        Sphere(const Vector &center, double radius, const Vector &albed, Property property, double ref_index = 1. , bool hollow = false) {
             this->center = center ;
             this->radius = radius ;
             this->albed = albed ;
             this->prop = property ;
+            this->ref_index = ref_index ;
+            this->hollow = hollow ;
         }
 
         Intersection intersect(const Ray &ray) const ;
