@@ -21,9 +21,44 @@ public:
   ~TriangleMesh() {}
     TriangleMesh() {};
 
-    Intersection intersect(const Ray& r) const {
-        Intersection i;
-		return i;
+    Intersection intersect(const Ray& ray) const {
+        Intersection inter;
+        Vector point = ray.o;
+        Vector u = ray.u;
+        double t = 100000 ;
+
+        for (int i = 0; i<indices.size();i++) {
+            TriangleIndices triangle = indices[i];
+            Vector A = vertices[triangle.vtxi] ;
+            Vector B = vertices[triangle.vtxj] ;
+            Vector C = vertices[triangle.vtxk] ;
+
+            Vector e1 = B - A ;
+            Vector e2 = C - A ;
+            Vector N = cross(e1,e2) ;
+            double UN = dot(u,N) ;
+
+            if (UN != 0) {
+                    Vector cr = cross(A-point,u) ;
+                    double gamma = - dot(e1,cr)/UN ;
+                    double beta = dot(e2,cr)/UN ;
+                    double alpha = 1 - beta - gamma ;
+                    double dist = dot(A-point,N)/UN ;        
+                    Vector P = point + dist*u ;
+
+                if (abs(alpha) <= 1 && abs(beta) <= 1 && abs(gamma) <= 1 && dist < t){
+                    t = dist ;
+                    inter.exist = true ;
+                    //Vector normal = alpha*normals[triangle.ni] + beta*normals[triangle.nj] + gamma*normals[triangle.nk] ; 
+                    //inter.normal = normal / norm(normal) ;
+                    inter.normal = N ;
+                    inter.point = P ;
+                    inter.t = dist ;
+                    //inter.index = 0 ;
+                }
+            }
+        }
+        return inter ;
 	}
 
     void readOBJ(const char* obj) {
@@ -56,12 +91,12 @@ public:
                     col[1] = std::min(1., std::max(0., col[1]));
                     col[2] = std::min(1., std::max(0., col[2]));
  
-                    vertices.push_back(vec);
+                    vertices.push_back(vec*0.6+Vector(0.,-10,0.));
                     vertexcolors.push_back(col);
  
                 } else {
                     sscanf(line, "v %lf %lf %lf\n", &vec[0], &vec[1], &vec[2]);
-                    vertices.push_back(vec);
+                    vertices.push_back(vec*0.6+Vector(0.,-10,0.));
                 }
             }
             if (line[0] == 'v' && line[1] == 'n') {

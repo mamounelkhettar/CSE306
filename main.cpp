@@ -19,7 +19,7 @@ Scene generate_scene() {
     Vector green(Vector(0, 1, 0)) ;
     Vector v1(Vector(0, 0, -1000)) ;
     Sphere* g = new Sphere(v1, 940., green, plain) ;
-    g->albed.print(); // print
+    //g->albed.print(); // print
     Vector pink(Vector(1, 0, 1)) ;
     Vector v2(Vector(0, 0, 1000)) ;
     Sphere* p = new Sphere(v2, 940., pink, plain) ;
@@ -50,6 +50,9 @@ Scene generate_scene() {
     Sphere object3(v9, 10, white, transparent, 1.5) ;
     Sphere object4(v9, 9.6, white, transparent, 1.5, true) ;
 
+    TriangleMesh* cat = new TriangleMesh();
+    cat->readOBJ("cadnav.com_model/Models_F0202A090/cat.obj");
+
     // genereate scene
     std::vector<Geometry *> scene_vector ;
     scene_vector.push_back(g) ;
@@ -58,12 +61,12 @@ Scene generate_scene() {
     scene_vector.push_back(y) ;
     scene_vector.push_back(b) ;
     scene_vector.push_back(o) ;
-    scene_vector.push_back(object) ;
+    scene_vector.push_back(cat) ;
     //scene_vector.push_back(object2) ;
     //scene_vector.push_back(object3) ;
     //scene_vector.push_back(object4) ; // hollow
     Scene scene(scene_vector) ;
-    scene_vector[0]->albed.print() ; // printing albed Vector have (0,0,0) instead of (0, 1, 0)
+    //scene_vector[0]->albed.print() ; // printing albed Vector have (0,0,0) instead of (0, 1, 0)
     
     return scene ;
 }
@@ -74,8 +77,7 @@ int main(int argc, char *argv[]) {
     clock_t start, end; 
     start = clock(); 
     
-    //TriangleMesh* cat = new TriangleMesh();
-    //cat->readOBJ("cat_model/cat.obj");
+    
     Scene scene = generate_scene() ;   // scene
 
     Vector Q = Vector(0, 0, 55) ;      // camera
@@ -84,11 +86,11 @@ int main(int argc, char *argv[]) {
     double H = 512 ;                   // height
     double W = 512 ;                   // width
     double fov = M_PI/2.5 ;            // field of view
-    double K  = 20 ;                 // numbers of ray launched for each pixel
+    double K  = 2 ;                 // numbers of ray launched for each pixel
     std::vector<unsigned char> img(W*H*3) ;   // image vector
 
     // scan all pixels
-    //#pragma omp parallel for schedule(dynamic, 1)
+    #pragma omp parallel for schedule(dynamic, 1)
     for (int i = 0; i < H ; i++) {
         for (int j = 0; j < W ; j++) {
             
@@ -105,7 +107,7 @@ int main(int argc, char *argv[]) {
                 pixel += anti ;
                 Vector normal_p = (pixel - Q) / norm(pixel - Q) ;         
                 Ray ray(Q, normal_p);
-                Vector c = scene.getColor(ray, light_source, 5) ;
+                Vector c = scene.getColor(ray, light_source, 3) ;
                 color += c ;
             }
             color = color/K ;
