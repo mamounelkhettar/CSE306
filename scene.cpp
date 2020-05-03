@@ -58,30 +58,30 @@ Vector Scene::getColor(const Ray& ray, const Vector& S, int ray_depth) const {
     if (inter.exist) {
 
         //reflection
-        if (s[inter.index].prop == mirror) { 
+        if (g[inter.index]->prop == mirror) { 
             Ray reflected_ray(P, ray.u - (2 * dot(ray.u, N)) * N) ;
             return this->getColor(reflected_ray, S, ray_depth - 1) ;
         
-        } else if (s[inter.index].prop == transparent){ 
+        } else if (g[inter.index]->prop == transparent){ 
             // refraction indices of the Snell-Descartes-Law
             double n1 ; 
             double n2 ; 
 
             // check hollow
-            if(s[inter.index].hollow){
+            if(g[inter.index]->hollow){
                     N = Vector(0., 0., 0.) - N;
-                    n1 = s[inter.index].ref_index ;
+                    n1 = g[inter.index]->ref_index ;
                     n2 = 1.5 ;
                 }
             
             if (dot(ray.u, N) > 0) {
                 P = P + epsilon*N;
                 N = Vector(0., 0., 0.) - N;
-                n1 = s[inter.index].ref_index ;
+                n1 = g[inter.index]->ref_index ;
                 n2 = 1;
             }  else {
                 n1 = 1; // refractive index of incoming plane
-                n2 =  s[inter.index].ref_index ;
+                n2 =  g[inter.index]->ref_index ;
             }
         
             // Fresnel Laws
@@ -114,11 +114,10 @@ Vector Scene::getColor(const Ray& ray, const Vector& S, int ray_depth) const {
             double intensity = 100000 ;
             //direct lighting
             Vector Lo = this->intensity(inter, S, intensity) ;
-
             //indirect lighting
             //P = P - 10*epsilon*N;
             Ray random = Ray(P, random_cos(N)) ;
-            Lo += s[inter.index].albed * this->getColor(random, S, ray_depth - 1) ;
+            Lo += g[inter.index]->albed * this->getColor(random, S, ray_depth - 1) ;
             return Lo;
         }
     }
@@ -131,8 +130,8 @@ Intersection Scene::intersect(const Ray& ray) const {
 
     
     // find index of closest sphere 
-    for (int i = 0; i < s.size(); i++) {
-        Intersection tmp = s[i].intersect(ray) ;
+    for (int i = 0; i < g.size(); i++) {
+        Intersection tmp = g[i]->intersect(ray) ;
         if (tmp.exist && tmp.t < t) {
             t = tmp.t ;
             index = i ;
@@ -142,17 +141,21 @@ Intersection Scene::intersect(const Ray& ray) const {
     if (index == -1) {
         inter.exist = false ;
     } else {
-        Intersection closest_sphere = s[index].intersect(ray) ; 
+
+        Intersection closest_sphere = g[index]->intersect(ray) ; 
         inter = closest_sphere ;
     
         inter.index = index ;
-        //s[index].albed.print() ;
+        //std::cout << index << std::endl ;
+        //g[4]->albed.print() ;
     }
     return inter ;
 }
 
 Vector Scene::intensity(const Intersection& i1, const Vector& S, double I) const {
-    Vector albedo = s[i1.index].albed ;
+    Vector albedo = g[i1.index]->albed ;
+    //std::cout << i1.index << std::endl ;
+    //albedo.print() ;
     double Vp ;
     Vector P = i1.point + epsilon*i1.normal ;
     Vector sp = S - P ;

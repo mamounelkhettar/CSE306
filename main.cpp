@@ -18,31 +18,32 @@ Scene generate_scene() {
     // generate scene objects
     Vector green(Vector(0, 1, 0)) ;
     Vector v1(Vector(0, 0, -1000)) ;
-    Sphere g(v1, 940., green, plain) ;
-
+    Sphere* g = new Sphere(v1, 940., green, plain) ;
+    g->albed.print();
     Vector pink(Vector(1, 0, 1)) ;
     Vector v2(Vector(0, 0, 1000)) ;
-    Sphere p(v2, 940., pink, plain) ;
+    Sphere* p = new Sphere(v2, 940., pink, plain) ;
 
     Vector red(Vector(1, 0, 0)) ;
     Vector v3(Vector(0, 1000, 0)) ;
-    Sphere r(v3, 940., red, plain) ;
+    Sphere* r = new Sphere(v3, 940., red, plain) ;
 
     Vector yellow(Vector(1, 1, 0)) ;
     Vector v4(Vector(0, -1000, 0)) ;
-    Sphere y(v4, 990., yellow, plain) ;
+    Sphere* y = new Sphere(v4, 990., yellow, plain) ;
 
     Vector blue(Vector(0, 0, 1)) ;
     Vector v5(Vector(1000, 0, 0)) ;
-    Sphere b(v5, 940., blue, plain) ;
+    Sphere* b = new Sphere(v5, 940., blue, plain) ;
 
     Vector cyan(Vector(0, 1, 1)) ;
     Vector v6(Vector(-1000, 0, 0)) ;
-    Sphere o(v6, 940., cyan, plain) ;
+    Sphere* o = new Sphere(v6, 940., cyan, plain) ;
     
     Vector white(1, 1, 1) ;
     Vector v7(0, 0, 0) ;
-    Sphere object(v7, 10, white, plain) ;
+    Sphere* object = new Sphere(v7, 10, white, plain) ;
+
     Vector v8(-21, 0, 0) ;
     Sphere object2(v8, 10, white, transparent, 1.5) ;
     Vector v9(21, 0, 0) ;
@@ -50,7 +51,7 @@ Scene generate_scene() {
     Sphere object4(v9, 9.6, white, transparent, 1.5, true) ;
 
     // genereate scene
-    std::vector<Sphere> scene_vector ;
+    std::vector<Geometry *> scene_vector ;
     scene_vector.push_back(g) ;
     scene_vector.push_back(p) ;
     scene_vector.push_back(r) ;
@@ -62,7 +63,9 @@ Scene generate_scene() {
     //scene_vector.push_back(object3) ;
     //scene_vector.push_back(object4) ; // hollow
     Scene scene(scene_vector) ;
-
+    //std::cout<<typeid(scene_vector[0]->albed).name()<<std::endl;
+    //std::cout << scene_vector.size() << std::endl;
+    
     return scene ;
 }
 
@@ -72,8 +75,10 @@ int main(int argc, char *argv[]) {
     clock_t start, end; 
     start = clock(); 
     
-
+    //TriangleMesh* cat = new TriangleMesh();
+    //cat->readOBJ("cat_model/cat.obj");
     Scene scene = generate_scene() ;   // scene
+
     Vector Q = Vector(0, 0, 55) ;      // camera
     Vector light_source(-10, 20, 40) ; // light source
 
@@ -84,7 +89,7 @@ int main(int argc, char *argv[]) {
     std::vector<unsigned char> img(W*H*3) ;   // image vector
 
     // scan all pixels
-    #pragma omp parallel for schedule(dynamic, 1)
+    //#pragma omp parallel for schedule(dynamic, 1)
     for (int i = 0; i < H ; i++) {
         for (int j = 0; j < W ; j++) {
             

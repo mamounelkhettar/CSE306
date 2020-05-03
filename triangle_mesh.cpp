@@ -21,8 +21,9 @@ public:
   ~TriangleMesh() {}
     TriangleMesh() {};
 
-    Intersection intersect(const Ray& r){
-		return Intersection();
+    Intersection intersect(const Ray& r) const {
+        Intersection i;
+		return i;
 	}
 
     void readOBJ(const char* obj) {

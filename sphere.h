@@ -5,9 +5,8 @@
 
 #include "geometry.h"
 
-enum Property {plain, mirror, transparent, light_source} ;
 
-class Sphere {
+class Sphere : public Geometry {
     public:
         Vector center ; // center of sphere
         double radius ; // radius of sphere
