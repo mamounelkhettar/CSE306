@@ -19,7 +19,7 @@ Scene generate_scene() {
     Vector green(Vector(0, 1, 0)) ;
     Vector v1(Vector(0, 0, -1000)) ;
     Sphere* g = new Sphere(v1, 940., green, plain) ;
-    g->albed.print();
+    g->albed.print(); // print
     Vector pink(Vector(1, 0, 1)) ;
     Vector v2(Vector(0, 0, 1000)) ;
     Sphere* p = new Sphere(v2, 940., pink, plain) ;
@@ -63,8 +63,7 @@ Scene generate_scene() {
     //scene_vector.push_back(object3) ;
     //scene_vector.push_back(object4) ; // hollow
     Scene scene(scene_vector) ;
-    //std::cout<<typeid(scene_vector[0]->albed).name()<<std::endl;
-    //std::cout << scene_vector.size() << std::endl;
+    scene_vector[0]->albed.print() ; // printing albed Vector have (0,0,0) instead of (0, 1, 0)
     
     return scene ;
 }
