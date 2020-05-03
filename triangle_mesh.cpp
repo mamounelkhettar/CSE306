@@ -49,12 +49,11 @@ public:
                 if (abs(alpha) <= 1 && abs(beta) <= 1 && abs(gamma) <= 1 && dist < t){
                     t = dist ;
                     inter.exist = true ;
-                    //Vector normal = alpha*normals[triangle.ni] + beta*normals[triangle.nj] + gamma*normals[triangle.nk] ; 
-                    //inter.normal = normal / norm(normal) ;
-                    inter.normal = N ;
+                    Vector normal = alpha*normals[triangle.ni] + beta*normals[triangle.nj] + gamma*normals[triangle.nk] ; 
+                    inter.normal = normal / norm(normal) ;
                     inter.point = P ;
                     inter.t = dist ;
-                    //inter.index = 0 ;
+                    inter.index = 0 ;
                 }
             }
         }
