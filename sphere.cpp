@@ -1,4 +1,4 @@
-
+#pragma once
 #include "sphere.h"
 
 Intersection Sphere::intersect(const Ray &ray) const {

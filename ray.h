@@ -1,7 +1,7 @@
 #ifndef ray_h
 #define ray_h
 
-#include "vector.h"
+#include "intersection.h"
 
 class Ray {
     public :

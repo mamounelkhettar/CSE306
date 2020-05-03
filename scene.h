@@ -5,7 +5,7 @@
 using namespace std;
 #include <vector>
 
-#include "sphere.h"
+#include "triangle_mesh.cpp"
 
 class Scene {
     public :
@@ -17,6 +17,8 @@ class Scene {
         Intersection intersect(const Ray& ray) const ;
         Vector intensity( const Intersection& i1, const Vector& S, double I) const ;
         Vector getColor(const Ray& ray, const Vector& S, int ray_depth) const ;
+        static Vector boxMuller() ;
+        Vector random_cos(const Vector &N) const ;
 };
 
 

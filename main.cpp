@@ -2,8 +2,11 @@
 #include <iostream>
 #include "time.h"
 #include <iomanip>
+#include "omp.h"
 
 #include "scene.h"
+#include "sphere.cpp"
+#include "scene.cpp"
 
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include "stb_image_write.h"
@@ -39,7 +42,7 @@ Scene generate_scene() {
     
     Vector white(1, 1, 1) ;
     Vector v7(0, 0, 0) ;
-    Sphere object(v7, 10, white, mirror) ;
+    Sphere object(v7, 10, white, plain) ;
     Vector v8(-21, 0, 0) ;
     Sphere object2(v8, 10, white, transparent, 1.5) ;
     Vector v9(21, 0, 0) ;
@@ -55,9 +58,9 @@ Scene generate_scene() {
     scene_vector.push_back(b) ;
     scene_vector.push_back(o) ;
     scene_vector.push_back(object) ;
-    scene_vector.push_back(object2) ;
-    scene_vector.push_back(object3) ;
-    scene_vector.push_back(object4) ; // hollow
+    //scene_vector.push_back(object2) ;
+    //scene_vector.push_back(object3) ;
+    //scene_vector.push_back(object4) ; // hollow
     Scene scene(scene_vector) ;
 
     return scene ;
@@ -77,32 +80,31 @@ int main(int argc, char *argv[]) {
     double H = 512 ;                   // height
     double W = 512 ;                   // width
     double fov = M_PI/2.5 ;            // field of view
-    double K  = 1000 ;                 // numbers of ray launched for each pixel
+    double K  = 20 ;                 // numbers of ray launched for each pixel
     std::vector<unsigned char> img(W*H*3) ;   // image vector
 
     // scan all pixels
-    //#pragma omp parallel for
+    #pragma omp parallel for schedule(dynamic, 1)
     for (int i = 0; i < H ; i++) {
-        //#pragma omp parallel for
         for (int j = 0; j < W ; j++) {
-            Vector pixel ;
             
+            Vector pixel ;
+            Vector anti = Scene::boxMuller() ;
             Vector color(0., 0., 0.) ;
-            pixel[0] = Q[0] + j + 0.5 - (W / 2) ;
-            pixel[1] = Q[1] - i - 0.5 + (H / 2) ;
-            pixel[2] = Q[2] - (W / (2 * tan(fov / 2))) ; 
-            Vector normal_p = (pixel - Q) / norm(pixel - Q) ;         
-        
-            Ray ray(Q, normal_p);
-            if (scene.s[scene.intersect(ray).index].prop == mirror || scene.s[scene.intersect(ray).index].prop == transparent ) {
-                for (int k = 0; k < K; k++) { // launch K rays for each pixel
-                    Vector c = scene.getColor(ray, light_source, 10) ;
-                    color += c ;
-                }
-                color = color/K ;
-            } else {
-                color = scene.getColor(ray, light_source, 10) ;
+            
+            
+            for (int k = 0; k < K; k++) { // launch K rays for each pixel
+                Vector anti = Scene::boxMuller() ;
+                pixel[0] = Q[0] + j + 0.5 - (W / 2) ;
+                pixel[1] = Q[1] - i - 0.5 + (H / 2) ;
+                pixel[2] = Q[2] - (W / (2 * tan(fov / 2))) ; 
+                pixel += anti ;
+                Vector normal_p = (pixel - Q) / norm(pixel - Q) ;         
+                Ray ray(Q, normal_p);
+                Vector c = scene.getColor(ray, light_source, 5) ;
+                color += c ;
             }
+            color = color/K ;
            
             double power = 1./2.2 ; // gamma correction
             img[i*W*3+j*3 + 0] = min(255., max(0., pow(color[0], power)*255)) ;
@@ -122,3 +124,8 @@ int main(int argc, char *argv[]) {
 
     return 0;
 }
+
+//clang-Xpreprocessor -fopenmp -lomp main.cpp scene.cpp sphere.cpp -o main.exe
+//g++ -fopenmp -O3 main.cpp scene.cpp sphere.cpp -o main
+
+//clang++ -Xpreprocessor -fopenmp main.cpp scene.cpp sphere.cpp -o main -lomp 

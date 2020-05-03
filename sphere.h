@@ -3,8 +3,7 @@
 
 #include <iostream>
 
-#include "ray.h"
-#include "intersection.h"
+#include "geometry.h"
 
 enum Property {plain, mirror, transparent, light_source} ;
 

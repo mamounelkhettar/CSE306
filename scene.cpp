@@ -1,3 +1,4 @@
+#pragma once
 #include "scene.h"
 #include "math.h"
 #include <iostream>
@@ -10,13 +11,39 @@ double epsilon = 0.001;
 static std::default_random_engine engine(10) ; 
 static std::uniform_real_distribution<double> uniform(0, 1) ;
 
-Vector boxMuller() {
-    double r1 = uniform(engine);
-    double r2 = uniform(engine);
-    double x = sqrt(-2 * log(r1)) * cos(2 * M_PI * r2);
-    double y = sqrt(-2 * log(r1)) * sin(2 * M_PI * r2);
+Vector Scene::boxMuller() {
+    double r1 = uniform(engine) ;
+    double r2 = uniform(engine) ;
+    double x = sqrt(-2*log(r1)) * cos(2*M_PI*r2) ;
+    double y = sqrt(-2*log(r1)) * sin(2*M_PI*r2) ;
     return Vector(x, y, 0.);
 }
+
+Vector Scene::random_cos(const Vector &N) const {
+    double r1 = uniform(engine) ;
+    double r2 = uniform(engine) ;
+    double x = cos(2 * M_PI * r1) * sqrt(1 - r2) ;
+    double y = sin(2 * M_PI * r1) * sqrt(1 - r2) ;
+    double z = sqrt(r2);
+
+    double min_N = min(min(abs(N[0]), abs(N[1])), abs(N[2])) ;
+    Vector T1;
+    for (int i = 0; i < 3; i++) {
+        if (abs(N[i]) == min_N) {
+            if (i==0) {
+                T1 = Vector(0, N[2], -N[1]);
+            } else if (i==1) {
+                T1 = Vector(-N[2], 0, N[0]);
+            } else {
+                T1 = Vector(N[1], -N[0], 0);
+            }
+        }
+    }
+    T1 = T1 / sqrt(dot(T1, T1));
+    Vector T2 = cross(N, T1);
+    return x*T1 + y*T2 + z*N;
+}
+
 
 Vector Scene::getColor(const Ray& ray, const Vector& S, int ray_depth) const {
 
@@ -48,7 +75,7 @@ Vector Scene::getColor(const Ray& ray, const Vector& S, int ray_depth) const {
                 }
             
             if (dot(ray.u, N) > 0) {
-                P = P + 2*epsilon*N;
+                P = P + epsilon*N;
                 N = Vector(0., 0., 0.) - N;
                 n1 = s[inter.index].ref_index ;
                 n2 = 1;
@@ -85,7 +112,14 @@ Vector Scene::getColor(const Ray& ray, const Vector& S, int ray_depth) const {
             
         } else {
             double intensity = 100000 ;
-            return this->intensity(inter, S, intensity) ;
+            //direct lighting
+            Vector Lo = this->intensity(inter, S, intensity) ;
+
+            //indirect lighting
+            //P = P - 10*epsilon*N;
+            Ray random = Ray(P, random_cos(N)) ;
+            Lo += s[inter.index].albed * this->getColor(random, S, ray_depth - 1) ;
+            return Lo;
         }
     }
 }
